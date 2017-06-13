@@ -11,7 +11,7 @@ var client = new MsTranslator({
     api_key: translatekey
 }, true);
 
-function getlanguage(text, cb) {
+function getlanguage(text, cb, error) {
 
     const documents = processDocuments(text);
 
@@ -26,7 +26,11 @@ function getlanguage(text, cb) {
     }
     request(options, (err, res, body) => {
         let result = JSON.parse(body);
-        cb(result.documents[0].detectedLanguages[0].iso6391Name, result.documents[0].detectedLanguages[0].name);
+        if (!result.statusCode) {
+            cb(result.documents[0].detectedLanguages[0].iso6391Name, result.documents[0].detectedLanguages[0].name);
+        } else {
+            error(result);
+        }
 
     });
 }
@@ -42,9 +46,9 @@ function processDocuments(rawDocuments) {
 
 function query(text, language, tolanguage, cb) {
     var params = {
-        text: text
-        , from: language
-        , to: tolanguage
+        text: text,
+        from: language,
+        to: tolanguage
     };
     client.translate(params, (err, data) => {
         cb(data);

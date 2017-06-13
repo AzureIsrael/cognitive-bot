@@ -28,7 +28,6 @@ bot.localePath(path.join(__dirname, './locale'));
 
 bot.dialog('/', [
     (session, args, next) => {
-        console.log('root');
         translator.getlanguage(session.message.text, (language, longname) => {
             session.privateConversationData.language = language;
 
@@ -37,6 +36,8 @@ bot.dialog('/', [
                 session.send(data);
                 session.beginDialog("afterlanguagedetect");
             });
+        }, (err) => {
+            console.log(err);
         });
     }
 ]);
