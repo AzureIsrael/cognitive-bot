@@ -1,0 +1,25 @@
+{
+    "name": "cognitive-bot",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "dependencies": {
+        "botbuilder": "^3.7.0",
+        "botbuilder-azure": "3.0.2",
+        "applicationinsights": "^0.20.1",
+        "crypto": "0.0.3",
+        "dotenv-extended": "^1.0.4",
+        "mstranslator": "^2.1.2",
+        "promise": "^7.1.1",
+        "request": "^2.74.0",
+        "request-promise": "^4.1.1"
+    },
+    "devDependencies": {
+        "restify": "^4.1.1"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Microsoft Corp.",
+    "license": "MIT"
+}
