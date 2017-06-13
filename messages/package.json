@@ -8,7 +8,6 @@
         "botbuilder-azure": "3.0.2",
         "applicationinsights": "^0.20.1",
         "crypto": "0.0.3",
-        "dotenv-extended": "^1.0.4",
         "mstranslator": "^2.1.2",
         "promise": "^7.1.1",
         "request": "^2.74.0",
