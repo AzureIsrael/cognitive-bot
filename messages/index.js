@@ -12,7 +12,7 @@ require('dotenv').config();
 var translator = require("./translator");
 var cognitive = require("./cognitive");
 var appInsights = require('applicationinsights');
-appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATION_KEY).start();
+appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
 var appInsightsClient = appInsights.getClient();
 
 var useEmulator = (process.env.NODE_ENV == 'development');
