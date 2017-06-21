@@ -1,5 +1,5 @@
 {
-    "name": "cognitive-bot",
+    "name": "cognitive-bot-service",
     "version": "1.0.0",
     "description": "",
     "main": "index.js",

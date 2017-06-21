@@ -2,17 +2,15 @@ var request = require('request-promise').defaults({
     encoding: null
 });;
 var translator = require("./translator");
-let cognitivekey = process.env.COGNITIVE_KEY;
-let uri = "https://westeurope.api.cognitive.microsoft.com/vision/v1.0/";
+
 const headers = {
     'Content-Type': "application/octet-stream",
-    'Ocp-Apim-Subscription-Key': cognitivekey
+    'Ocp-Apim-Subscription-Key': process.env.COMPUTER_VISION_KEY
 };
 
 function imagedescription(stream, language, cb) {
-    let descriptionuri = uri + "describe";
     const options = {
-        uri: descriptionuri,
+        uri: process.env.COMPUTER_VISION_API_ENDPOINT + "/describe",
         method: "POST",
         headers,
         json: true,
@@ -33,9 +31,8 @@ function imagedescription(stream, language, cb) {
 }
 
 function handwriting(stream, language, cb) {
-    let handwritinguri = uri + "ocr";
     const options = {
-        uri: handwritinguri,
+        uri: process.env.COMPUTER_VISION_API_ENDPOINT + "/ocr",
         headers,
         json: true,
         method: "POST",
@@ -46,7 +43,24 @@ function handwriting(stream, language, cb) {
     };
     var result = request(options);
     result.then((res) => {
-        cb(extractText(res.regions));
+        let text = '';
+        if (res.regions.length == 0) {
+            switch (language) {
+                case 'en':
+                    text = 'sorry did not find any text to reconize';
+                    break;
+                case 'he':
+                    text = 'לא זוהה שום טקסט בתמונה';
+                    break;
+            }
+        } else {
+            text = extractText(res.regions);
+        }
+
+        cb(text);
+    }).catch(function(err) {
+        // Crawling failed or Cheerio choked...
+        console.log(err);
     });
 
 
@@ -61,6 +75,7 @@ function extractText(regions) {
             });
         });
     });
+
 
     return output;
 }

@@ -10,12 +10,15 @@
         "program": "${workspaceRoot}/messages/index.js",
         "env": {
             "NODE_ENV": "development",
-            "MicrosoftAppId": "55dd6818-ecd4-4fca-8a9f-91494af2c273",
-            "MicrosoftAppPassword": "N2HgzVBCUjQNmEKrMcfO2WOdejlJGUIH21m2Pvdrj5s=",
-            "LANGUAGE_KEY": "f98ff8fe2424409e90b1bbd71d40794e",
-            "TRANSLATE_KEY": "b92cc5bf2dd64d3f83fd74da270ab63d",
-            "COGNITIVE_KEY": "d75a83f48918412ca842e5d3885ba8b4",
-            "APPINSIGHTS_INSTRUMENTATIONKEY": "42447ffb-6316-4c3f-90ad-4d17895db3f8"
+            "MicrosoftAppId": "afd4ea03-5994-42b5-b180-5b5aca9106c1",
+            "MicrosoftAppPassword": "s5tPnxEjZOAfYgTGkJkcav4",
+            "TEXT_ANALYTICS_KEY": "4951d4d82b7644ef9ae82442ef8a0e59",
+            "TRANSLATE_KEY": "5cb65630f6b849d58cd17fe4becfef1e",
+            "COMPUTER_VISION_KEY": "213d5364da564c3d9313c46a1c1a2357",
+            "APPINSIGHTS_INSTRUMENTATIONKEY": "42447ffb-6316-4c3f-90ad-4d17895db3f8",
+            "TEXT_ANALYTICS_API_ENDPOINT": "https://westus.api.cognitive.microsoft.com/text/analytics/v2.0",
+            "TRANSLATE_API_ENDPOINT": "https://api.cognitive.microsoft.com/sts/v1.0",
+            "COMPUTER_VISION_API_ENDPOINT": "https://westeurope.api.cognitive.microsoft.com/vision/v1.0"
         }
     }]
 }

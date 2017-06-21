@@ -2,13 +2,9 @@ var MsTranslator = require('mstranslator');
 var request = require('request-promise');
 const crypto = require('crypto')
 
-const LANGUAGES = 'https://westus.api.cognitive.microsoft.com/text/analytics/v2.0/languages'
-let languagekey = process.env.LANGUAGE_KEY;
-let translatekey = process.env.TRANSLATE_KEY;
-
 
 var client = new MsTranslator({
-    api_key: translatekey
+    api_key: process.env.TRANSLATE_KEY
 }, true);
 
 function getlanguage(text, cb, error) {
@@ -16,12 +12,12 @@ function getlanguage(text, cb, error) {
     const documents = processDocuments(text);
 
     const options = {
-        url: LANGUAGES,
+        url: process.env.TEXT_ANALYTICS_API_ENDPOINT + '/languages',
         method: 'POST',
         body: JSON.stringify({ documents }),
         headers: {
             'Content-Type': 'application/json',
-            'Ocp-Apim-Subscription-Key': languagekey,
+            'Ocp-Apim-Subscription-Key': process.env.TEXT_ANALYTICS_KEY,
         }
     }
     request(options, (err, res, body) => {
