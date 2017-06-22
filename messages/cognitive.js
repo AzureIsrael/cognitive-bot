@@ -1,6 +1,7 @@
 var request = require('request-promise').defaults({
     encoding: null
-});;
+});
+
 var translator = require("./translator");
 
 const headers = {
@@ -8,7 +9,7 @@ const headers = {
     'Ocp-Apim-Subscription-Key': process.env.COMPUTER_VISION_KEY
 };
 
-function imagedescription(stream, language, cb) {
+function describeImage(stream, language, cb) {
     const options = {
         uri: process.env.COMPUTER_VISION_API_ENDPOINT + "/describe",
         method: "POST",
@@ -30,7 +31,7 @@ function imagedescription(stream, language, cb) {
     });
 }
 
-function handwriting(stream, language, cb) {
+function ocr(stream, language, cb) {
     const options = {
         uri: process.env.COMPUTER_VISION_API_ENDPOINT + "/ocr",
         headers,
@@ -72,6 +73,6 @@ function extractText(regions) {
 }
 
 module.exports = {
-    imagedescription,
-    handwriting
+    describeImage,
+    ocr
 }

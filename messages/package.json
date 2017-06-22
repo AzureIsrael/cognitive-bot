@@ -12,7 +12,12 @@
         "promise": "^7.1.1",
         "request": "^2.74.0",
         "request-promise": "^4.1.1",
-        "bluebird": "^3.5.0"
+        "bluebird": "^3.5.0",
+        "azure-storage": "^2.2.0",
+        "guid": "^0.0.12",
+        "stream-buffers": "^3.0.1",
+        "azure-storage-simple": "^0.6.0",
+        "buffer": "^5.0.6"
     },
     "devDependencies": {
         "restify": "^4.1.1"

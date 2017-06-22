@@ -2,5 +2,7 @@
     "option-select": "Choose an option",
     "options": "Image Description|OCR",
     "detection": "Please upload an image for detection",
-    "ocr-text-not-found": "sorry did not find any text to reconize"
+    "ocr-text-not-found": "sorry did not find any text to reconize",
+    "please-identify": "Please take a picture to identify",
+    "welcome-back": "Welcome back"
 }

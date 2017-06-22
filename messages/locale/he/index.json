@@ -2,5 +2,7 @@
     "option-select": "בחרו מהאפשרויות הבאות",
     "options": "תאור תמונה|זיהוי טקסט",
     "detection": "אנא העלו תמונה לזיהוי",
-    "ocr-text-not-found": "לא זוהה שום טקסט בתמונה"
+    "ocr-text-not-found": "לא זוהה שום טקסט בתמונה",
+    "please-identify": "אנא צלם את עצמך להזדהות",
+    "welcome-back": "ברוך שובך"
 }

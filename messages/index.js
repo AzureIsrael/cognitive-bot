@@ -10,6 +10,8 @@ var request = require('request-promise').defaults({
 var telemetryModule = require('./telemetry.js');
 var translator = require("./translator");
 var cognitive = require("./cognitive");
+var identify = require("./identify");
+
 var appInsights = require('applicationinsights');
 appInsights.setup(process.env.APPINSIGHTS_INSTRUMENTATIONKEY).start();
 var appInsightsClient = appInsights.getClient();
@@ -36,8 +38,7 @@ bot.dialog('/', [
 
             session.send('Detected: ' + longname);
             translator.query(session.message.text, session.privateConversationData.language, "en", function(data) {
-                session.send(data);
-                session.beginDialog("afterlanguagedetect");
+                session.beginDialog("identifyPersonDialog");
             });
         }, (err) => {
             console.log(err);
@@ -46,7 +47,37 @@ bot.dialog('/', [
 ]);
 
 
-bot.dialog('afterlanguagedetect', [
+bot.dialog('identifyPersonDialog', [
+
+    (session, args, next) => {
+        // ask user to upload image for identification
+        builder.Prompts.attachment(session, "please-identify");
+    },
+    (session, args, next) => {
+        var self = this;
+        var msg = session.message;
+        if (msg.attachments.length) {
+            // Message with attachment, proceed to download it.
+            // Skype & MS Teams attachment URLs are secured by a JwtToken, so we need to pass the token from our bot.
+            var attachment = msg.attachments[0];
+            session.sendTyping();
+            var fileDownload = request(attachment.contentUrl);
+            self.contentType = attachment.contentType;
+
+            fileDownload.then(
+                function(response) {
+                    identify.identifyPerson(response, self.contentType, (data) => {
+                        session.send(session.localizer.gettext(session.preferredLocale(), "welcome-back") + data);
+                        session.replaceDialog("chooseCognitiveServiceDialog");
+                    });
+                });
+        } else {
+            session.replaceDialog("identifyPersonDialog");
+        }
+    }
+]);
+
+bot.dialog('chooseCognitiveServiceDialog', [
     (session, args, next) => {
         session.preferredLocale(session.privateConversationData.language, (err) => {
             var telemetry = telemetryModule.createTelemetry(session);
@@ -60,7 +91,9 @@ bot.dialog('afterlanguagedetect', [
         });
     },
     (session, args, next) => {
+        // store user choice in session
         session.privateConversationData.action = args.response.index;
+        // ask user to upload image for ocr/description
         builder.Prompts.attachment(session, "detection");
     },
     (session, args, next) => {
@@ -77,31 +110,28 @@ bot.dialog('afterlanguagedetect', [
                     switch (session.privateConversationData.action) {
                         case 0:
                             {
-                                cognitive.imagedescription(response, session.privateConversationData.language, (data) => {
+                                cognitive.describeImage(response, session.privateConversationData.language, (data) => {
                                     session.send(data);
-                                    session.replaceDialog("afterlanguagedetect");
                                 });
                             }
                             break;
                         case 1:
                             {
-                                cognitive.handwriting(response, session.privateConversationData.language, (data) => {
+                                cognitive.ocr(response, session.privateConversationData.language, (data) => {
                                     if (data.length > 0) {
                                         session.send(data);
                                     } else {
                                         session.send(session.localizer.gettext(session.preferredLocale(), "ocr-text-not-found"));
                                     }
-
-                                    session.replaceDialog("afterlanguagedetect");
                                 });
                             }
                             break;
                     }
 
                 });
-        } else {
-            session.replaceDialog("afterlanguagedetect");
         }
+
+        session.replaceDialog("chooseCognitiveServiceDialog");
     }
 ]);
 
