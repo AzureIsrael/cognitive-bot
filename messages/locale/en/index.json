@@ -1,4 +1,6 @@
-{"option-select":"Choose an option",
- "options":"Image Description|OCR",
- "detection":"Please upload an image for detection"
+{
+    "option-select": "Choose an option",
+    "options": "Image Description|OCR",
+    "detection": "Please upload an image for detection",
+    "ocr-text-not-found": "sorry did not find any text to reconize"
 }

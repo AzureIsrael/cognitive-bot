@@ -86,7 +86,12 @@ bot.dialog('afterlanguagedetect', [
                         case 1:
                             {
                                 cognitive.handwriting(response, session.privateConversationData.language, (data) => {
-                                    session.send(data);
+                                    if (data.length > 0) {
+                                        session.send(data);
+                                    } else {
+                                        session.send(session.localizer.gettext(session.preferredLocale(), "ocr-text-not-found"));
+                                    }
+
                                     session.replaceDialog("afterlanguagedetect");
                                 });
                             }

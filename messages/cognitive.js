@@ -44,16 +44,7 @@ function handwriting(stream, language, cb) {
     var result = request(options);
     result.then((res) => {
         let text = '';
-        if (res.regions.length == 0) {
-            switch (language) {
-                case 'en':
-                    text = 'sorry did not find any text to reconize';
-                    break;
-                case 'he':
-                    text = 'לא זוהה שום טקסט בתמונה';
-                    break;
-            }
-        } else {
+        if (res.regions.length > 0) {
             text = extractText(res.regions);
         }
 
