@@ -35,10 +35,20 @@ bot.dialog('/', [
     (session, args, next) => {
         translator.getlanguage(session.message.text, (language, longname) => {
             session.privateConversationData.language = language;
-
-            session.send('Detected: ' + longname);
-            translator.query(session.message.text, session.privateConversationData.language, "en", function(data) {
-                session.beginDialog("chooseCognitiveServiceDialog");
+            session.send(longname + ' detected');
+            session.preferredLocale(language, function(err) {
+                if (!err) {
+                    // Locale files loaded
+                    var telemetry = telemetryModule.createTelemetry(session);
+                    appInsightsClient.trackEvent('Language', telemetry);
+                } else {
+                    // Problem loading the selected locale
+                    session.error(err);
+                }
+            });
+            translator.query(session.message.text, language, "en", function(data) {
+                session.send(data);
+                session.beginDialog("identifyPersonDialog");
             });
         }, (err) => {
             console.log(err);
@@ -52,8 +62,6 @@ bot.dialog('identifyPersonDialog', [
     (session, args, next) => {
         // ask user to upload image for identification
         builder.Prompts.attachment(session, "please-identify");
-        //identify.detectFace("https://cognitivebotsa.blob.core.windows.net/facetodetect/00694ae4-e3dc-a82e-bb18-d0c1f5d68f32");
-
     },
     (session, args, next) => {
         var self = this;
@@ -68,10 +76,18 @@ bot.dialog('identifyPersonDialog', [
 
             fileDownload.then(
                 function(response) {
-                    /*identify.identifyPerson(response, self.contentType, (data) => {
-                        session.send(session.localizer.gettext(session.preferredLocale(), "welcome-back") + data);
+                    identify.identifyPerson(response, self.contentType, (personName) => {
+                        session.send(session.localizer.gettext(session.preferredLocale(),
+                            "welcome-back") + ' ' + personName);
+                        var telemetry = telemetryModule.createTelemetry(session);
+                        appInsightsClient.trackEvent('SignIn', telemetry);
                         session.replaceDialog("chooseCognitiveServiceDialog");
-                    });*/
+                    }, () => {
+                        session.send(session.localizer.gettext(session.preferredLocale(),
+                            "unrecognized-person"));
+                        session.replaceDialog("identifyPersonDialog");
+
+                    });
                 });
         } else {
             session.replaceDialog("identifyPersonDialog");
@@ -81,22 +97,23 @@ bot.dialog('identifyPersonDialog', [
 
 bot.dialog('chooseCognitiveServiceDialog', [
     (session, args, next) => {
-        session.preferredLocale(session.privateConversationData.language, (err) => {
-            var telemetry = telemetryModule.createTelemetry(session);
-
-            appInsightsClient.trackEvent('Language', telemetry);
-
-            var options = session.localizer.gettext(session.preferredLocale(), "options");
-            builder.Prompts.choice(session, "option-select", options, {
-                listStyle: builder.ListStyle.list
-            });
+        var options = session.localizer.gettext(session.preferredLocale(), "options");
+        builder.Prompts.choice(session, "option-select", options, {
+            listStyle: builder.ListStyle.list
         });
     },
     (session, args, next) => {
-        // store user choice in session
-        session.privateConversationData.action = args.response.index;
-        // ask user to upload image for ocr/description
-        builder.Prompts.attachment(session, "detection");
+        if (args.response.index == 2) {
+            session.send(session.localizer.gettext(session.preferredLocale(), "sign-off"));
+            var telemetry = telemetryModule.createTelemetry(session);
+            appInsightsClient.trackEvent('SignOff', telemetry);
+            session.replaceDialog("identifyPersonDialog");
+        } else {
+            // store user choice in session
+            session.privateConversationData.action = args.response.index;
+            // ask user to upload image for ocr/description
+            builder.Prompts.attachment(session, "detection");
+        }
     },
     (session, args, next) => {
         var msg = session.message;
@@ -114,6 +131,8 @@ bot.dialog('chooseCognitiveServiceDialog', [
                             {
                                 cognitive.describeImage(response, session.privateConversationData.language, (data) => {
                                     session.send(data);
+                                    var telemetry = telemetryModule.createTelemetry(session);
+                                    appInsightsClient.trackEvent('ImageDescription', telemetry);
                                     session.replaceDialog("chooseCognitiveServiceDialog");
                                 });
                             }
@@ -126,6 +145,8 @@ bot.dialog('chooseCognitiveServiceDialog', [
                                     } else {
                                         session.send(session.localizer.gettext(session.preferredLocale(), "ocr-text-not-found"));
                                     }
+                                    var telemetry = telemetryModule.createTelemetry(session);
+                                    appInsightsClient.trackEvent('OCR', telemetry);
                                     session.replaceDialog("chooseCognitiveServiceDialog");
                                 });
                             }

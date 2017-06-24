@@ -4,36 +4,52 @@ var storage = require('azure-storage-simple')(process.env.AZURE_STORAGE_ACCOUNT 
 var request = require('request');
 
 const headers = {
-    'Content-Type': "application/octet-stream",
+    'Content-Type': "application/json",
     'Ocp-Apim-Subscription-Key': process.env.FACE_KEY
 };
 
-function identifyPerson(buffer, contentType, cb) {
+function identifyPerson(buffer, contentType, recognized, unrecognized) {
     uploadPhoto(buffer, contentType)
         .then((blobResult) => {
             var photoUrl = "https://" + process.env.AZURE_STORAGE_ACCOUNT + ".blob.core.windows.net/" + blobResult.container + "/" + blobResult.blob;
-            cb(photoUrl);
-            /*
             detectFace(photoUrl).then(res => {
-                var faceId = res[0].faceId;
+                var resParsed = JSON.parse(res);
+                if (resParsed.length == 0) {
+                    unrecognized();
+                    return null;
+                }
+                var faceId = resParsed[0].faceId;
                 identifyFace(faceId)
                     .then(res => {
-                        var personId = res[0].candidates[0].personId;
+                        var candidates = JSON.parse(res)[0].candidates;
+                        if (candidates.length == 0) {
+                            unrecognized();
+                            return;
+                        }
+                        var personId = candidates[0].personId;
                         getPerson(personId)
                             .then(res => {
-                                var name = res.name;
-                                cb(name);
+                                var name = JSON.parse(res).name;
+                                recognized(name);
+                                return null;
                             }).catch(function(err) {
                                 console.log(err);
                             });
+                        return null;
                     }).catch(function(err) {
                         console.log(err);
                     });
+                return null;
+
             }).catch(function(err) {
                 console.log(err);
-            });*/
+            });
+
+            return null;
         })
-        .catch((error) => { console.log(error) });;
+        .catch((error) => {
+            console.log(error)
+        });;
 }
 
 function uploadPhoto(buffer, contentType) {
@@ -43,19 +59,13 @@ function uploadPhoto(buffer, contentType) {
 
 function detectFace(photoUrl) {
     var options = {
-        uri: 'https://westeurope.api.cognitive.microsoft.com/face/v1.0/detect',
+        uri: process.env.FACE_API_ENDPOINT + '/detect',
         method: "POST",
         headers,
-        body: JSON.stringify({ "url": photoUrl })
+        body: JSON.stringify({ "url": photoUrl }),
+        //json: true
     };
-    rp(options)
-        .then(res => {
-            var faceId = res[0].faceId;
-        })
-        .catch(function(err) {
-            // Crawling failed or Cheerio choked...
-            console.log(err.message);
-        });
+    return rp(options);
 }
 
 function identifyFace(faceId) {
@@ -63,30 +73,25 @@ function identifyFace(faceId) {
         uri: process.env.FACE_API_ENDPOINT + "/identify",
         method: "POST",
         headers,
-        json: true,
-        formData: {
-            body: {
-                "personGroupId": process.env.PERSON_GROUP_ID,
-                "faceIds": [faceId],
-                "maxNumOfCandidatesReturned": 1,
-                "confidenceThreshold": 0.5
-            }
-        }
+        body: JSON.stringify({
+            "personGroupId": process.env.PERSON_GROUP_ID,
+            "faceIds": [faceId],
+            "maxNumOfCandidatesReturned": 1,
+            "confidenceThreshold": 0.5
+        })
     };
     return rp(options);
 }
 
 function getPerson(personId) {
     const options = {
-        uri: process.env.FACE_API_ENDPOINT + "/persongroups/" + process.emit.PERSON_GROUP_ID + "/persons/" + personId,
+        uri: process.env.FACE_API_ENDPOINT + "/persongroups/" + process.env.PERSON_GROUP_ID + "/persons/" + personId,
         method: "GET",
-        headers,
-        json: true
+        headers
     };
     return rp(options);
 }
 
 module.exports = {
-    identifyPerson,
-    detectFace
+    identifyPerson
 }

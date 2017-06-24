@@ -1,8 +1,10 @@
 {
     "option-select": "Choose an option",
-    "options": "Image Description|OCR",
+    "options": "Image description|OCR|Sign off",
     "detection": "Please upload an image for detection",
     "ocr-text-not-found": "sorry did not find any text to reconize",
     "please-identify": "Please take a picture to identify",
-    "welcome-back": "Welcome back"
+    "welcome-back": "Welcome back",
+    "unrecognized-person": "User not regonized or not authorized, please try again",
+    "sign-off": "Thank you for using microsoft cognitive bot"
 }
