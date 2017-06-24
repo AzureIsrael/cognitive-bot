@@ -17,13 +17,16 @@
             "COMPUTER_VISION_KEY": "213d5364da564c3d9313c46a1c1a2357",
             "FACE_KEY": "5148e757c5244ddcbc67505dab62370a",
             "APPINSIGHTS_INSTRUMENTATIONKEY": "62a9c6cd-ed78-451b-9d15-198d6442dd81",
+
             "TEXT_ANALYTICS_API_ENDPOINT": "https://westus.api.cognitive.microsoft.com/text/analytics/v2.0",
             "TRANSLATE_API_ENDPOINT": "https://api.cognitive.microsoft.com/sts/v1.0",
             "COMPUTER_VISION_API_ENDPOINT": "https://westeurope.api.cognitive.microsoft.com/vision/v1.0",
             "FACE_API_ENDPOINT": "https://westeurope.api.cognitive.microsoft.com/face/v1.0",
             "AZURE_STORAGE_ACCOUNT": "cognitivebotsa",
             "AZURE_STORAGE_ACCESS_KEY": "Po8+QtevhZUYZIoMizU3HyLaWMgQD/p7TnQDq1OKQO5st1ID4XP57aJBKPj4Khb9bxXYLDN7FRZwo6y6f2sn9A==",
-            "AZURE_STORAGE_CONNECTION_STRING": "DefaultEndpointsProtocol=https;AccountName=cognitivebotsa;AccountKey=Po8+QtevhZUYZIoMizU3HyLaWMgQD/p7TnQDq1OKQO5st1ID4XP57aJBKPj4Khb9bxXYLDN7FRZwo6y6f2sn9A==;EndpointSuffix=core.windows.net"
+            "AZURE_STORAGE_CONNECTION_STRING": "DefaultEndpointsProtocol=https;AccountName=cognitivebotsa;AccountKey=Po8+QtevhZUYZIoMizU3HyLaWMgQD/p7TnQDq1OKQO5st1ID4XP57aJBKPj4Khb9bxXYLDN7FRZwo6y6f2sn9A==;EndpointSuffix=core.windows.net",
+
+            "PERSON_GROUP_ID": "69fe1203-2c81-48dd-9505-2c0179c9f6a9"
         }
     }]
 }

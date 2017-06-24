@@ -38,7 +38,7 @@ bot.dialog('/', [
 
             session.send('Detected: ' + longname);
             translator.query(session.message.text, session.privateConversationData.language, "en", function(data) {
-                session.beginDialog("identifyPersonDialog");
+                session.beginDialog("chooseCognitiveServiceDialog");
             });
         }, (err) => {
             console.log(err);
@@ -52,6 +52,8 @@ bot.dialog('identifyPersonDialog', [
     (session, args, next) => {
         // ask user to upload image for identification
         builder.Prompts.attachment(session, "please-identify");
+        //identify.detectFace("https://cognitivebotsa.blob.core.windows.net/facetodetect/00694ae4-e3dc-a82e-bb18-d0c1f5d68f32");
+
     },
     (session, args, next) => {
         var self = this;
@@ -66,10 +68,10 @@ bot.dialog('identifyPersonDialog', [
 
             fileDownload.then(
                 function(response) {
-                    identify.identifyPerson(response, self.contentType, (data) => {
+                    /*identify.identifyPerson(response, self.contentType, (data) => {
                         session.send(session.localizer.gettext(session.preferredLocale(), "welcome-back") + data);
                         session.replaceDialog("chooseCognitiveServiceDialog");
-                    });
+                    });*/
                 });
         } else {
             session.replaceDialog("identifyPersonDialog");
@@ -112,6 +114,7 @@ bot.dialog('chooseCognitiveServiceDialog', [
                             {
                                 cognitive.describeImage(response, session.privateConversationData.language, (data) => {
                                     session.send(data);
+                                    session.replaceDialog("chooseCognitiveServiceDialog");
                                 });
                             }
                             break;
@@ -123,15 +126,17 @@ bot.dialog('chooseCognitiveServiceDialog', [
                                     } else {
                                         session.send(session.localizer.gettext(session.preferredLocale(), "ocr-text-not-found"));
                                     }
+                                    session.replaceDialog("chooseCognitiveServiceDialog");
                                 });
                             }
                             break;
                     }
 
                 });
+        } else {
+            session.replaceDialog("chooseCognitiveServiceDialog");
         }
 
-        session.replaceDialog("chooseCognitiveServiceDialog");
     }
 ]);
 
