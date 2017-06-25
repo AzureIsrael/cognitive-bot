@@ -16,8 +16,7 @@
         "azure-storage": "^2.2.0",
         "guid": "^0.0.12",
         "azure-storage-simple": "^0.6.0",
-        "buffer": "^5.0.6",
-        "project-oxford": "^1.8.0"
+        "buffer": "^5.0.6"
     },
     "devDependencies": {
         "restify": "^4.1.1"
