@@ -54,6 +54,9 @@ save the group id, you'll need it later for configuring the bot.
 "PERSON_GROUP_ID"
 ```
 7. Test your bot locally using [bot framework emulator](https://docs.microsoft.com/en-us/bot-framework/debug-bots-emulator)
+
+![emulator](img/emulator.png)
+
 8. Setup continuous integration from your git repo to the bot service
 9. Configure the same environment variable (listed above) as Application settings in the bot service.
 10. Test your bot with web chat
