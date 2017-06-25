@@ -26,6 +26,10 @@ Setup
 
 4. Teach your face API about your authorized persons by creating a new gorup,  persons, upload persons faces and train the model. you can use directly from the [Face API](https://azure.microsoft.com/en-us/services/cognitive-services/face/) website or with [Microsoft Intelligent Kiosk](https://www.microsoft.com/en-gb/store/p/intelligent-kiosk/9nblggh5qd84?rtc=1).
 save the group id, you'll need it later for configuring the bot.
+
+![kiosk](img/kiosk.png)
+
+
 4. Create bot service based on node js code
 
 ![bot service](img/botservice.png)
